@@ -1,0 +1,135 @@
+.viz {
+  width: 50vw;
+
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  background-color: #441b00;
+  float: left;
+}
+.blacked {
+  background-color: black;
+}
+.item {
+  background-color: green;
+  border-radius: 50%;
+}
+.monster {
+  background-color: red;
+  border-radius: 50%;
+}
+.portal {
+  background-color: purple;
+}
+.status {
+  font-family: 'Metamorphous', cursive;
+  font-size: 3em;
+  background-color: #ba4900;
+  color: black;
+  padding: 0.1em;
+  margin-bottom: 1vw;
+}
+h1, p, ul {
+  font-family: 'Metamorphous', cursive;
+}
+
+#tile {
+  display: table-cell;
+  height: 1vw;
+  width: 1vw;
+}
+
+div {
+  padding: 0px;
+  margin: 0px;
+}
+.floor {
+  background-color: #441b00;
+}
+.wall {
+  background-color: #301300;
+}
+.player {
+  background-color: blue;
+  border-radius: 50%;
+}
+.boss {
+  background-color: white;
+  color: black;
+}
+body {
+  background-color: #441b00;
+  color: #fff18e;
+  font-family: 'Metamorphous', cursive;
+  text-align: center;
+}
+
+.old {
+  opacity: 1;
+}
+.older {
+  opacity: 0.8;
+}
+.oldest {
+  opacity: 0.6;
+}
+/* The Modal (background) */
+.modal {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #562f16;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #77401c;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover, .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.hidden {
+  display: none;
+  color: red;
+}
+.right {
+}
+ul {
+  list-style-position: inside;
+}
+.itemMess {
+  color: green;
+}
+.fightMess {
+  color: red;
+}
+button {
+  color: black;
+  padding: .3em;
+  border-radius: 50%;
+  font-size: 3vw;
+  background-color: #e58140;
+  text-decoration: none;
+  cursor: pointer;
+}
