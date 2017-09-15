@@ -1,0 +1,954 @@
+class Viewer extends React.Component {
+  constructor(props) {
+    super();
+    this.state = {
+      gmap: "gameMap",
+      pos: "startPos",
+      stage: 1,
+      playerTurn: true,
+      lev2: "",
+      lev3: "",
+      lev4: "",
+      killCount: 0,
+      message1: "",
+      message2: "",
+      message3: "",
+      itemCount: 0,
+      weaponLevel: 1,
+      dead: "hidden",
+      winning: "hidden",
+      possibleWeapons: {
+        2: "toilet plunger",
+        3: "rolled up catalogue",
+        4: "phone book",
+        5: "nerf gun"
+      },
+      stats: { level: 1, HP: 100, XP: 0, NextLevel: 100, Weapon: "thumbtack" }
+    };
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.playAgain = this.playAgain.bind(this);
+   this.up = this.up.bind(this);
+    this.down = this.down.bind(this);
+    this.left = this.left.bind(this);
+    this.right = this.right.bind(this);
+    
+  }
+  componentWillMount() {
+    let walls = [];
+    let i, j, rand, monsterHP;
+    let setUp = [];
+    let shell = [];
+    let setUp2 = [];
+    let level2 = [];
+    let level3 = [];
+    let level4 = [];
+    let level20 = [];
+    let level30 = [];
+    let level40 = [];
+    let row = [];
+    let gameMap = [];
+    let startPos = 1206;
+    let monmon;
+    let numMon = 0;
+    let monLev = 1;
+    let monsters = [
+      {
+        name: "mosquito",
+        health: 15,
+        attack: [2, 1, 3, 4]
+      },
+      {
+        name: "toad",
+        health: 30,
+        attack: [2, 3, 4, 5]
+      },
+      {
+        name: "wasp",
+        health: 45,
+        attack: [4, 5, 6, 7]
+      },
+      {
+        name: "rat",
+        health: 60,
+        attack: [6, 7, 8, 9]
+      },
+      {
+        name: "rabid stray cat",
+        health: 75,
+        attack: [10, 11, 12, 13]
+      }
+    ];
+
+    for (let i = 0; i < 1500; i++) {
+      row.push(i);
+    }
+
+    //big map is 50x30 tiles
+    //walls must be generated
+    //first outer walls
+    for (i = 0; i < 51; i++) {
+      walls.push(i);
+      level20.push(i);
+      level30.push(i);
+      level40.push(i);
+    }
+    for (i = 99; i < 1501; i += 50) {
+      walls.push(i);
+      level20.push(i);
+      level30.push(i);
+      level40.push(i);
+    }
+    for (i = 1499; i > 1450; i--) {
+      walls.push(i);
+      level20.push(i);
+      level30.push(i);
+      level40.push(i);
+    }
+    for (i = 1450; i > 50; i -= 50) {
+      walls.push(i);
+      level20.push(i);
+      level30.push(i);
+      level40.push(i);
+    }
+
+    //maze walls
+
+    for (i = 461; i < 482; i++) {
+      walls.push(i);
+    }
+
+    for (i = 511; i < 1500; i += 50) {
+      walls.push(i);
+    }
+    for (i = 991; i > 1; i = i) {
+      walls.push(i);
+      i = i - 50;
+    }
+    for (i = 990; i > 971; i--) {
+      walls.push(i);
+    }
+
+    for (let i = 0; i < 1500; i++) {
+      if (walls.includes(i)) {
+        gameMap.push({ place: i, wall: true, monster: false });
+        level3.push({ place: i, wall: true, monster: false });
+      } else if (i === startPos) {
+        gameMap.push({ place: i, wall: false, monster: false, player: true });
+        level3.push({ place: i, wall: false, monster: false, player: true });
+      } else if (i === 145) {
+        gameMap.push({ place: i, wall: false, monster: false, portal: true });
+        level3.push({ place: i, wall: false, monster: false, portal: true });
+      } else if (Math.random() > 0.99) {
+        monsterHP = Math.random() * 100;
+        monsterHP = Math.ceil(monsterHP);
+        numMon++;
+        //the first ten monsters will be level 1, the next ten level 2, the next ten lev 3...
+        numMon < 10
+          ? (monLev = 1)
+          : numMon < 20
+            ? (monLev = 2)
+            : numMon < 30
+              ? (monLev = 3)
+              : numMon < 40 ? (monLev = 4) : (monLev = 5);
+
+        if (monsterHP < 20) {
+          monmon = monsters[0];
+        } else if (monsterHP < 40) {
+          monmon = monsters[1];
+        } else if (monsterHP < 60) {
+          monmon = monsters[2];
+        } else if (monsterHP < 80) {
+          monmon = monsters[3];
+        } else {
+          monmon = monsters[4];
+        }
+        gameMap.push({
+          place: i,
+          wall: false,
+          monster: true,
+          monsterHp: monsterHP,
+          monName: monmon.name,
+          attackRange: monmon.attack,
+          monsterLev: monLev
+        });
+        level3.push({
+          place: i,
+          wall: false,
+          monster: true,
+          monsterHp: monsterHP * 2,
+          monName: monmon.name,
+          attackRange: monmon.attack,
+          monsterLev: monLev * 2
+        });
+      } else if (Math.random() > 0.995) {
+        let health = Math.random() * 100;
+        health = Math.ceil(health);
+
+        gameMap.push({
+          place: i,
+          wall: false,
+          monster: false,
+          health: true,
+          ammount: health
+        });
+        level3.push({
+          place: i,
+          wall: false,
+          monster: false,
+          health: true,
+          ammount: health
+        });
+      } else {
+        gameMap.push({ place: i, wall: false, monster: false });
+        level3.push({ place: i, wall: false, monster: false });
+      }
+    }
+    //2nd Level creation
+
+    for (i = 1000; i < 1040; i++) {
+      level20.push(i);
+      level40.push(i);
+    }
+
+    for (i = 611; i < 651; i++) {
+      level20.push(i);
+      level40.push(i);
+    }
+
+    for (let i = 0; i < 1500; i++) {
+      if (level20.includes(i)) {
+        level2.push({ place: i, wall: true, monster: false });
+        level4.push({ place: i, wall: true, monster: false });
+      } else if (i === startPos) {
+        level2.push({ place: i, wall: false, monster: false, player: true });
+        level4.push({ place: i, wall: false, monster: false, player: true });
+      } else if (i === 145) {
+        level2.push({ place: i, wall: false, monster: false, portal: true });
+        level4.push({
+          place: i,
+          wall: false,
+          monster: true,
+          boss: true,
+          monsterHp: 500,
+          monsterLev: 8
+        });
+      } else if (Math.random() > 0.99) {
+        monsterHP = Math.random() * 100;
+        monsterHP = Math.ceil(monsterHP);
+        numMon++;
+        //the first ten monsters will be level 1, the next ten level 2, the next ten lev 3...
+        numMon < 10
+          ? (monLev = 1)
+          : numMon < 20
+            ? (monLev = 2)
+            : numMon < 30
+              ? (monLev = 3)
+              : numMon < 40 ? (monLev = 4) : (monLev = 5);
+
+        if (monsterHP < 20) {
+          monmon = monsters[0];
+        } else if (monsterHP < 40) {
+          monmon = monsters[1];
+        } else if (monsterHP < 60) {
+          monmon = monsters[2];
+        } else if (monsterHP < 80) {
+          monmon = monsters[3];
+        } else {
+          monmon = monsters[4];
+        }
+        level2.push({
+          place: i,
+          wall: false,
+          monster: true,
+          monsterHp: monsterHP,
+          monName: monmon.name,
+          attackRange: monmon.attack,
+          monsterLev: monLev
+        });
+        level4.push({
+          place: i,
+          wall: false,
+          monster: true,
+          monsterHp: monsterHP * 3,
+          monName: monmon.name,
+          attackRange: monmon.attack,
+          monsterLev: monLev * 3
+        });
+      } else if (Math.random() > 0.995) {
+        let health = Math.random() * 100;
+        health = Math.ceil(health);
+
+        level2.push({
+          place: i,
+          wall: false,
+          monster: false,
+          health: true,
+          ammount: health
+        });
+        level4.push({
+          place: i,
+          wall: false,
+          monster: false,
+          health: true,
+          ammount: health
+        });
+      } else {
+        level2.push({ place: i, wall: false, monster: false });
+        level4.push({ place: i, wall: false, monster: false });
+      }
+    }
+    level4[145].boss = true;
+    level4[145].monName = "Boss";
+    level4[145].monster = false;
+    level4[154].monterHp = 500;
+
+    this.setState({
+      firstStage: gameMap,
+      gmap: gameMap,
+      pos: startPos,
+      lev2: level2,
+      lev3: level3,
+      lev4: level4
+    });
+    document.addEventListener("keydown", this.onKeyDown);
+  }
+  
+  calcViz() {
+    let dangerZone = [];
+    let daMap = this.state.gmap;
+    let pos = this.state.pos;
+    let visTiles = [];
+    let start = pos - 255;
+    let end = pos + 255;
+    let y = 46;
+    for (let c = 0; c < 10; c++) {
+      for (let z = 0; z < 4; z++) {
+        dangerZone.push(y + z);
+      }
+      y = y + 50;
+    }
+    //console.log(dangerZone);
+
+    for (let n = 1; n < 11; n++) {
+      for (let i = start; i < start + 11; i++) {
+        if (i > -1 && i < 1500) {
+          visTiles.push(i);
+        }
+      }
+      start = start + 50;
+    }
+    //console.log(visTiles[0].toString().slice(-2));
+
+    let targ = visTiles[0].toString().slice(-2);
+    targ = parseInt(targ);
+    // console.log(visTiles);
+    if (targ === 99 || targ === 49) {
+      let n = 0;
+      for (let i = 0; i < 11; i++) {
+        visTiles.splice(n, 1);
+        n = n + 10;
+      }
+    }
+    if (targ === 98 || targ === 48) {
+      let n = 0;
+      for (let i = 0; i < 11; i++) {
+        visTiles.splice(n, 2);
+        n = n + 9;
+      }
+    }
+    if (targ === 97 || targ === 47) {
+      let n = 0;
+      for (let i = 0; i < 11; i++) {
+        visTiles.splice(n, 3);
+        n = n + 8;
+      }
+    }
+    if (targ === 96 || targ === 46) {
+      let n = 0;
+      for (let i = 0; i < 11; i++) {
+        visTiles.splice(n, 4);
+        n = n + 7;
+      }
+    }
+    pos = pos.toString().slice(-2);
+    pos = parseInt(pos);
+  //  console.log(pos);
+
+    let avoid = [51, 52, 53, 54, 55, 1, 2, 3, 4, 5];
+
+    if (avoid.includes(pos)) {
+      for (let i = 0; i < dangerZone.length; i++) {
+        let tes = dangerZone[i];
+        if (visTiles.includes(tes)) {
+          visTiles = visTiles.filter(function(num) {
+            return num !== tes;
+          });
+        }
+      }
+    }
+    for (let i = 0; i < visTiles.length; i++) {
+      let num = visTiles[i];
+      daMap[num].seeable = true;
+    }
+  }
+  playAgain() {
+    function reloader() {
+      location.reload(true);
+    }
+
+    reloader();
+  }
+  win() {
+    this.setState({ winning: "modal" });
+    // console.log("winning!")
+  }
+  kill(nextPos) {
+    let newMap = this.state.gmap;
+    let newKill = this.state.killCount + 1;
+    let monName = newMap[nextPos].monName;
+    let exp;
+    let toNextLev = this.state.stats.NextLevel;
+    monName === "mosquito"
+      ? (exp = 25)
+      : monName === "toad"
+        ? (exp = 35)
+        : monName === "wasp"
+          ? (exp = 45)
+          : monName === "rat" ? (exp = 55) : (exp = 75);
+    let newMessage =
+      "You killed a " + monName + "! You gained " + exp + " points of XP!";
+    newMap[nextPos].monster = false;
+    let newStats = this.state.stats;
+    if (exp >= toNextLev) {
+      newStats.level = newStats.level + 1;
+    }
+    if (newMap[nextPos].boss) {
+      this.win();
+    }
+    exp > toNextLev
+      ? (newStats.NextLevel = 100)
+      : (newStats.NextLevel = toNextLev - exp);
+    newStats.XP += exp;
+    this.setState({
+      message3: this.state.message2,
+      message2: this.state.message1,
+      message1: newMessage,
+      playerTurn: false,
+      gmap: newMap,
+      stats: newStats,
+      killCount: newKill
+    });
+  }
+
+  attack(nextPos) {
+    let newMessage;
+    let fix = this.state.gmap;
+    let newHealth;
+    let monsterhp = this.state.gmap[nextPos].monsterHp;
+    let monName = this.state.gmap[nextPos].monName;
+    let damage;
+    let lev = this.state.stats.level;
+    let rando = Math.random();
+    let mlev = this.state.gmap[nextPos].monsterLev;
+    rando = rando * 10;
+    rando = Math.ceil(rando);
+    damage = rando * lev;
+
+    if (damage >= monsterhp) {
+      this.kill(nextPos);
+    } else {
+      newHealth = monsterhp - damage;
+      fix[nextPos].monsterHp = newHealth;
+      if (!fix[nextPos].boss) {
+        newMessage =
+          "You attack a level " +
+          mlev +
+          " " +
+          monName +
+          " for " +
+          damage +
+          " points of damage!";
+      } else {
+        newMessage = "You attack the boss for " + damage + " points of damage!";
+      }
+      this.setState({
+        message3: this.state.message2,
+        message2: this.state.message1,
+        message1: newMessage,
+        gmap: fix
+      });
+
+      // console.log("you attack " + monName + " for " + damage + " points of damage!")
+      //console.log("attack for " + rando +" points of damage!")
+      this.setState({ playerTurn: false });
+    }
+  }
+  defend(np) {
+    let mappy,
+      myHealth,
+      rando,
+      mLev,
+      damage,
+      newHealth,
+      newMessage,
+      monName,
+      newStats;
+    mappy = this.state.gmap;
+    myHealth = this.state.stats.HP;
+    mLev = mappy[np].monsterLev;
+    monName = mappy[np].monName;
+    rando = Math.random();
+    rando = rando * 10;
+    rando = Math.ceil(rando);
+    damage = rando * mLev;
+    newStats = this.state.stats;
+    newStats.HP = newStats.HP - damage;
+    newHealth = myHealth - damage;
+    if (damage > myHealth) {
+      this.die();
+    } else if (mappy[np].boss) {
+      newMessage =
+        "The " + monName + " attacks you for " + damage + " points of damage!";
+      this.setState({
+        message3: this.state.message2,
+        message2: this.state.message1,
+        message1: newMessage,
+        playerTurn: true,
+        stats: newStats
+      });
+    } else {
+      newMessage =
+        "A level " +
+        mLev +
+        " " +
+        monName +
+        " attacks you for " +
+        damage +
+        " points of damage!";
+      this.setState({
+        message3: this.state.message2,
+        message2: this.state.message1,
+        message1: newMessage,
+        playerTurn: true,
+        stats: newStats
+      });
+    }
+  }
+  die() {
+    //  console.log("this is the abyss")
+    this.setState({ dead: "modal" });
+  }
+  fight(hp, name, attack, playerStats, turn, nextPos) {
+    //  console.log(name);
+    //  console.log(attack);
+    //  console.log(turn);
+    if (turn) {
+      this.attack(nextPos);
+    } else {
+      this.defend(nextPos);
+    }
+  }
+  up() {
+    let currentPos = this.state.pos;
+    let nextPos = currentPos - 50;
+     let mapo = this.state.gmap;
+    let attack, name, hp, stats, turn;
+    turn = this.state.playerTurn;
+    
+    if (this.state.gmap[nextPos].portal) {
+      this.nextMap(currentPos);
+    } else if (this.state.gmap[nextPos].monster) {
+      stats = this.state.stats;
+      turn = this.state.playerTurn;
+      name = this.state.gmap[nextPos].monName;
+      hp = this.state.gmap[nextPos].monsterHp;
+      attack = this.state.gmap[nextPos].attackRange;
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].boss) {
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].health) {
+      this.health(nextPos, currentPos);
+    } else if (!this.state.gmap[nextPos].wall) {
+      mapo[nextPos].player = true;
+      mapo[currentPos].player = false;
+      this.setState({ gmap: mapo, pos: nextPos });
+    }
+    
+}
+  down(){
+     let currentPos = this.state.pos;
+    let nextPos = currentPos + 50;
+     let mapo = this.state.gmap;
+    let attack, name, hp, stats, turn;
+    turn = this.state.playerTurn;
+    
+    if (this.state.gmap[nextPos].portal) {
+      this.nextMap(currentPos);
+    } else if (this.state.gmap[nextPos].monster) {
+      stats = this.state.stats;
+      turn = this.state.playerTurn;
+      name = this.state.gmap[nextPos].monName;
+      hp = this.state.gmap[nextPos].monsterHp;
+      attack = this.state.gmap[nextPos].attackRange;
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].boss) {
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].health) {
+      this.health(nextPos, currentPos);
+    } else if (!this.state.gmap[nextPos].wall) {
+      mapo[nextPos].player = true;
+      mapo[currentPos].player = false;
+      this.setState({ gmap: mapo, pos: nextPos });
+    
+  }
+  }
+  right() {
+     let currentPos = this.state.pos;
+    let nextPos = currentPos + 1;
+    let mapo = this.state.gmap; 
+    let attack, name, hp, stats, turn;
+    turn = this.state.playerTurn;
+    
+    if (this.state.gmap[nextPos].portal) {
+      this.nextMap(currentPos);
+    } else if (this.state.gmap[nextPos].monster) {
+      stats = this.state.stats;
+      turn = this.state.playerTurn;
+      name = this.state.gmap[nextPos].monName;
+      hp = this.state.gmap[nextPos].monsterHp;
+      attack = this.state.gmap[nextPos].attackRange;
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].boss) {
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].health) {
+      this.health(nextPos, currentPos);
+    } else if (!this.state.gmap[nextPos].wall) {
+      mapo[nextPos].player = true;
+      mapo[currentPos].player = false;
+      this.setState({ gmap: mapo, pos: nextPos });
+    
+  }
+  }
+  left() {
+     let currentPos = this.state.pos;
+    let nextPos = currentPos - 1;
+     let mapo = this.state.gmap;
+    let attack, name, hp, stats, turn;
+    turn = this.state.playerTurn;
+    
+    if (this.state.gmap[nextPos].portal) {
+      this.nextMap(currentPos);
+    } else if (this.state.gmap[nextPos].monster) {
+      stats = this.state.stats;
+      turn = this.state.playerTurn;
+      name = this.state.gmap[nextPos].monName;
+      hp = this.state.gmap[nextPos].monsterHp;
+      attack = this.state.gmap[nextPos].attackRange;
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].boss) {
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].health) {
+      this.health(nextPos, currentPos);
+    } else if (!this.state.gmap[nextPos].wall) {
+      mapo[nextPos].player = true;
+      mapo[currentPos].player = false;
+      this.setState({ gmap: mapo, pos: nextPos });
+    
+  }
+  }
+  nextMap(p) {
+    let next;
+    let num = this.state.stage;
+    num++;
+    if (this.state.stage === 1) {
+      next = this.state.lev2;
+    } else if (this.state.stage === 2) {
+      next = this.state.lev3;
+    } else {
+      next = this.state.lev4;
+    }
+    this.setState({ gmap: next, pos: 1206, stage: num });
+  }
+  newWeapon(wl, np) {
+    let mapo = this.state.gmap;
+    mapo[np].health = false;
+    let stats = this.state.stats;
+    wl++;
+    stats.Weapon = this.state.possibleWeapons[wl];
+
+    let newMessage = "You found a " + this.state.possibleWeapons[wl] + "!";
+    this.setState({
+      gmap: mapo,
+      stats: stats,
+      weaponLevel: wl,
+      message3: this.state.message2,
+      message2: this.state.message1,
+      message1: newMessage
+    });
+  }
+  health(np, cp) {
+    let newMessage;
+    let wl = this.state.weaponLevel;
+    let pts = this.state.gmap[np].ammount;
+    let newMap = this.state.gmap;
+    let newStats = this.state.stats;
+    let counter = this.state.itemCount;
+    if (counter > 3 && wl === 1) {
+      this.newWeapon(wl, np);
+    } else if (counter > 6 && wl === 2) {
+      this.newWeapon(wl, np);
+    } else {
+      newMessage = "You picked up some health!  HP +" + pts + "!";
+      newMap[np].health = false;
+      newMap[cp].player = false;
+      newMap[np].player = true;
+      newStats.HP = newStats.HP + pts;
+      counter++;
+      this.setState({
+        itemCount: counter,
+        stats: newStats,
+        gmap: newMap,
+        message3: this.state.message2,
+        message2: this.state.message1,
+        message1: newMessage,
+        pos: np
+      });
+    }
+  }
+  onKeyDown(e) {
+ //  console.log(e);
+    let press = e.key;
+
+    let keyed = {
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -50,
+      ArrowDown: 50
+    };
+    // console.log(keyed[press]);
+    let currentPos = this.state.pos;
+    let mapo = this.state.gmap;
+
+    let nextPos = keyed[press] + currentPos;
+    let attack, name, hp, stats, turn;
+    turn = this.state.playerTurn;
+    if (this.state.gmap[nextPos].portal) {
+      this.nextMap(currentPos);
+    } else if (this.state.gmap[nextPos].monster) {
+      stats = this.state.stats;
+      turn = this.state.playerTurn;
+      name = this.state.gmap[nextPos].monName;
+      hp = this.state.gmap[nextPos].monsterHp;
+      attack = this.state.gmap[nextPos].attackRange;
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].boss) {
+      this.fight(hp, name, attack, stats, turn, nextPos);
+    } else if (this.state.gmap[nextPos].health) {
+      this.health(nextPos, currentPos);
+    } else if (!this.state.gmap[nextPos].wall) {
+      mapo[nextPos].player = true;
+      mapo[currentPos].player = false;
+      this.setState({ gmap: mapo, pos: nextPos });
+    }
+  }
+   render() {
+    this.calcViz();
+    let info = this.state.gmap;
+    // console.log(info);
+
+    return (
+      <div>
+        <MessagePane
+          message1={this.state.message1}
+          message2={this.state.message2}
+          message3={this.state.message3}
+        />
+        <div>
+        <Winning
+          but={this.playAgain}
+          viz={this.state.winning}
+          kills={this.state.killCount}
+          reset={this.reload}
+        />
+        <Death
+          but={this.playAgain}
+          viz={this.state.dead}
+          kills={this.state.killCount}
+          reset={this.reload}
+        />
+        <Vp inf={this.state.gmap} /> </div>
+<div className="right">
+        <StatusPane
+          level={this.state.stats.level}
+          hp={this.state.stats.HP}
+          xp={this.state.stats.XP}
+          nlp={this.state.stats.NextLevel}
+          weapon={this.state.stats.Weapon}
+        />
+        
+  </div>
+           
+        
+        <Up track={this.up} /> <br />
+          <Left track={this.left} /> &nbsp;  &nbsp;  &nbsp; <Right track={this.right} /> <br />
+          <Down track={this.down} />
+      </div>
+    );
+  }
+}
+class Up extends React.Component {
+  render() {
+    return <button onClick={this.props.track}>▲</button>
+  }
+}
+class Down extends React.Component {
+  render() {
+    return <button onClick={this.props.track}>▼</button>
+  }
+}
+class Left extends React.Component {
+  render() {
+    return <button onClick={this.props.track}>◀ </button>
+  }
+}
+class Right extends React.Component {
+  render() {
+    return <button onClick={this.props.track}> ▶</button>
+  }
+}
+class Vp extends React.Component {
+  render() {
+    return  <div className="viz">
+         {this.props.inf.map(data =>
+            <span
+              className={
+                !data.seeable
+                  ? "blacked"
+                  : data.monster
+                    ? "monster"
+                    : data.health
+                      ? "item"
+                      : data.wall
+                        ? "wall"
+                        : data.player
+                          ? "player"
+                          : data.portal
+                            ? "portal"
+                            : data.boss ? "boss" : "floor"
+              }
+              id="tile"
+              wall={data.wall}
+              monster={data.monster}
+              item={data.item}
+              player={data.player}
+              />
+          )}
+        </div>
+      
+      
+                              
+}}
+
+class MessagePane extends React.Component {
+  render() {
+    return (
+      <div className="messages">
+        <ul>
+          <li className="old">{this.props.message1} </li>
+          <li className="older">
+            {this.props.message2}
+            {" "}
+          </li>
+          <li className="oldest">
+            {this.props.message3}
+            {" "}
+          </li>
+        </ul>
+        {" "}
+      </div>
+    );
+  }
+}
+class Death extends React.Component {
+  render() {
+    return (
+      <div className={this.props.viz}>
+        <div className="modal-content">
+
+          <p className="status">You have died... </p>
+          <p className="status">
+            {" "}During your quest you vanquished {this.props.kills} enemies
+            before meeting a foe who vanquished you...
+            {" "}
+          </p>
+          <button className="status" onClick={this.props.but}>try again</button>
+        </div>
+      </div>
+    );
+  }
+}
+
+class Winning extends React.Component {
+  render() {
+    return (
+      <div className={this.props.viz}>
+        <div className="modal-content">
+
+          <p className="status">You have Won! </p>
+          <p className="status">
+            {" "}During your quest you vanquished {this.props.kills} enemies
+            before meeting a boss who you also vanquished!
+            {" "}
+          </p>
+          <button className="status" onClick={this.props.but}>
+            Replay Value?
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
+
+const Key = () =>
+  <span>
+    <span className="player">You</span>
+    {" "}<span className="monster">enemies</span>
+    {" "}<span className="portal"> portal</span>
+    {" "}<span className="item">item</span>
+    {" "}
+    <span className="boss">
+      boss
+    </span>
+  </span>;
+
+
+class StatusPane extends React.Component {
+  render() {
+    return (
+      <div className="status">
+        <h5>
+          Level: {this.props.level} | HP: {this.props.hp} | XP: {this.props.xp}
+          {" "}| Next Level: {this.props.nlp} | Weapon: {this.props.weapon}
+        </h5>
+        <h4> {this.props.message}</h4>
+
+      </div>
+    );
+  }
+}
+class Credits extends React.Component {
+  constructor(props) {
+    super();
+  }
+  render() {
+    return( <div className="credit">
+    <a href="https://www.okiwebdesign.us" target="_blank"><h5>built by <br />Tom Landis <br />in<strong> React.js</strong> </h5></a></div>)
+  }
+}
+class App extends React.Component {
+  render() {
+    return <div className="container"><Key /><Viewer /><Credits /></div>;
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById("App"));
