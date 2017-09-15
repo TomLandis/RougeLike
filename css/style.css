@@ -126,7 +126,7 @@ ul {
 }
 button {
   color: beige;
-  
+  touch-action: manipulation;
   padding-left: 2vw;
   padding-right: 2vw;
   border-radius: 50%;
