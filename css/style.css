@@ -4,7 +4,7 @@
   display: flex;
   flex-wrap: wrap;
   margin: auto;
-  background-color: #441b00;
+  background-color: #595354;
   float: left;
 }
 .blacked {
@@ -15,7 +15,7 @@
   border-radius: 50%;
 }
 .monster {
-  background-color: red;
+  background-color: #a5002c;
   border-radius: 50%;
 }
 .portal {
@@ -23,10 +23,10 @@
 }
 .status {
   font-family: 'Metamorphous', cursive;
-  font-size: 3em;
-  background-color: #ba4900;
+  font-size: 1.2em;
+  background-color: #595354;
   color: beige;
-  padding: 0.1em;
+  padding: 0.2em;
   margin-bottom: 1vw;
 }
 h1, p, ul {
@@ -38,28 +38,39 @@ h1, p, ul {
   height: 1vw;
   width: 1vw;
 }
-
+span .player, span .monster, span .portal, span .item, span .boss{
+  padding:0.7em;
+  margin-top:2em;
+}
+.container > div{
+  margin-top:1em;
+}
+.container {
+  margin-top: 1em;
+}
 div {
   padding: 0px;
   margin: 0px;
 }
 .floor {
-  background-color: #441b00;
+  background-color: #595354;
 }
 .wall {
-  background-color: #301300;
+  background-color: #a8999b;
 }
 .player {
   background-color: blue;
   border-radius: 50%;
+  color:white;
+  
 }
 .boss {
   background-color: white;
   color: black;
 }
 body {
-  background-color: #441b00;
-  color: #fff18e;
+  background-color: #d1cacc;
+  color: black;
   font-family: 'Metamorphous', cursive;
   text-align: center;
 }
@@ -68,10 +79,10 @@ body {
   opacity: 1;
 }
 .older {
-  opacity: 0.8;
+  opacity: 0.7;
 }
 .oldest {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 /* The Modal (background) */
 .modal {
@@ -89,10 +100,10 @@ body {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #562f16;
+  background-color: #473d40;
   margin: 10% auto; /* 15% from the top and centered */
   padding: 20px;
-  border: 1px solid #77401c;
+  border: 1px solid #473d40;
   width: 85%; /* Could be more or less, depending on screen size */
 }
 
@@ -131,7 +142,7 @@ button {
   padding-right: 2vw;
   border-radius: 50%;
   font-size: 3vw;
-  background-color: #e58140;
+  background-color: #473d40;
   text-decoration: none;
   cursor: pointer;
 }
@@ -145,14 +156,13 @@ a:hover {
 }
 .credit {
   font-family: 'Metamorphous', cursive;
-  font-size: 8vmin;
+  font-size: 0.5em !important;
   width: 120px;
   margin-left: auto;
   margin-right: auto;
-  border: 3px solid #e58140;
-  margin-top: 13vw;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  border: 3px solid #473d40;
+  margin-top: 100px !important;
+  padding:2em;
   border-radius: 70%;
   -webkit-transition: -webkit-transform .8s ease-in-out;
   transition: transform .8s ease-in-out;
@@ -162,4 +172,7 @@ a:hover {
   transform: rotate(360deg);
   border: 3px solid yellow;
   color: yellow;
+}
+.credit a h5{
+  font-size: 0.5em;
 }
